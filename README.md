@@ -1,45 +1,83 @@
 # NotchPom
 
-A small, native Pomodoro timer for the Mac menu bar, with a clickable countdown beside the MacBook notch. Built with SwiftUI and AppKit; no dependencies, accounts, or network requests.
+A tiny Pomodoro timer for your Mac menu bar, with a clickable countdown beside the MacBook notch. Simple controls, adjustable focus and break times, and a Liquid Glass background.
 
-## Try it
+## Download
 
-Requires macOS 13 or later and Xcode Command Line Tools (`xcode-select --install`).
+### [Download NotchPom for Mac](https://github.com/EdwardWritesCodeIGuess/notchpom/releases/latest/download/NotchPom.dmg)
+
+**macOS 13 or later · Apple Silicon and Intel · Free · No account or developer tools needed**
+
+[All releases and ZIP download](https://github.com/EdwardWritesCodeIGuess/notchpom/releases/latest)
+
+## Install in a minute
+
+1. Download **NotchPom.dmg** using the link above.
+2. Open the downloaded disk image and drag **NotchPom** into the **Applications** shortcut.
+3. Eject the disk image, then open **NotchPom** from Applications.
+4. Click the countdown in your **menu bar** at the top of the screen. Set your **Focus** and **Break** minutes, then click **Start**.
+
+NotchPom lives in the menu bar, so **there is no Dock icon**. The controls open automatically the first time.
+
+### If macOS blocks the first launch
+
+This is a community test build, ad-hoc signed but **not Apple-notarized**. macOS may say the developer cannot be verified or that Apple could not verify the app is free of malware.
+
+1. Try opening NotchPom once, then dismiss the message.
+2. Open **System Settings → Privacy & Security**.
+3. Scroll to **Security**, click **Open Anyway** for NotchPom, then confirm **Open**. Authenticate if asked.
+
+Use this exception only for the copy you intended to download from this repository. You do not need to disable Gatekeeper or run terminal commands. School or work Macs may require administrator approval. [Apple's first-launch instructions](https://support.apple.com/en-us/102445).
+
+## Use the timer
+
+| Control | What it does |
+| --- | --- |
+| Focus / Break | Set each duration independently, from **1–180 minutes**. Pause before editing; a change resets the current session. |
+| Start / Pause | Run or pause the timer. Space works while the controls are open. |
+| Reset ↶ | Reset the current focus or break session. |
+| Skip ⏭ | Switch to the next phase without counting a completed focus session. |
+| Show beside notch | Show a small countdown to the right of the MacBook notch. Click it to start or pause. |
+| Auto-start | Start the next phase automatically. Off by default, so you control when to continue. |
+| Sound | Play a sound when a session ends. |
+| Quit | Close NotchPom from the bottom of the controls. |
+
+On Macs without a notch, the floating timer appears just below the center of the menu bar. You can hide it and use only the menu bar countdown. Liquid Glass appears on **macOS 26+**; older versions use frosted material. Appearance follows macOS accessibility settings.
+
+Duration and display preferences persist. Relaunching starts a fresh focus session; the completed count is for the current app launch. After sleep, an expired session completes once. Auto-start begins the next phase fresh rather than counting sessions while you were away.
+
+## Update or uninstall
+
+**Update:** Quit NotchPom, download the latest release, and replace the old copy in Applications. Your preferences are kept. Updates are manual.
+
+**Uninstall:** Quit NotchPom and move it from Applications to Trash.
+
+## Help
+
+[Report a bug or request a feature](https://github.com/EdwardWritesCodeIGuess/notchpom/issues). Include your macOS version and whether your Mac has a notch. The floating timer may overlap items on crowded menu bars; turn off **Show beside notch** if needed. Full-screen behavior varies by application.
+
+## Build from source
+
+For developers: use **Xcode 26+ or matching Command Line Tools with the macOS 26+ SDK**. The app still runs on macOS 13+. Built with SwiftUI and AppKit, with no third-party dependencies or network requests.
 
 ```sh
+git clone https://github.com/EdwardWritesCodeIGuess/notchpom.git
+cd notchpom
+swift run TimerCoreChecks
 bash scripts/build-app.sh
 open dist/NotchPom.app
 ```
 
-The controls open on first launch. After that, click the countdown in your menu bar. There is no Dock icon. To keep the app, drag `dist/NotchPom.app` into Applications.
-
-- Set focus and break durations independently from **1–180 minutes**. Pause before editing; changing either duration resets the current session.
-- Start/pause with the main button or Space while the controls are open. Reset restarts the current phase; skip switches phases without counting a completed focus session.
-- Click the small notch countdown to start or pause.
-- Sessions alternate between focus and break. The next session waits for you unless **Start next session automatically** is enabled.
-- Duration, sound, auto-start, and notch visibility preferences persist. Relaunching starts a fresh focus session. The completed count is for this app launch.
-- On a display without a notch, the optional floating timer appears just below the center of the menu bar. On a notched MacBook, it appears immediately to the right of the notch using the screen's reported geometry. Screen changes reposition it automatically.
-- Quit from the menu bar controls.
-
-## Develop and test
+To make the universal DMG, ZIP, and SHA-256 checksums:
 
 ```sh
-swift run TimerCoreChecks
-swift run NotchPom
-bash scripts/build-app.sh
+bash scripts/package-release.sh
+```
+
+The timer checks cover pause/resume, delayed ticks, phase transitions, configuration bounds, reset, and repeated starts. To check the menu bar controls in a logged-in desktop session:
+
+```sh
 dist/NotchPom.app/Contents/MacOS/NotchPom --smoke-test
 ```
 
-The UI smoke test needs a logged-in macOS desktop session. It opens the controls, verifies the menu bar item/popover/panel initialize, prints `UI_SMOKE_PASS`, and quits. Set `NOTCHPOM_PREVIEW` to an absolute PNG path to save a view snapshot.
-
-The timer uses a wall-clock deadline rather than counting ticks. After sleep, an expired session completes once, and the next phase starts fresh if auto-start is enabled. Sleeping does not accumulate fictional completed sessions. Tests cover pause/resume, delayed ticks, phase transitions, configuration bounds, reset, and repeated starts.
-
-GitHub Actions tests and packages the app as a downloadable workflow artifact. Builds use the runner's CPU architecture. The local test build uses your Mac's architecture.
-
-## Test-build limits
-
-This is an ad-hoc signed development build, without Apple notarization. A copy downloaded onto another Mac may require **Open Anyway** in System Settings → Privacy & Security. No Accessibility or Screen Recording permission is needed by the app.
-
-The floating notch panel can overlap menu bar items on crowded menu bars; disable **Show beside notch** if needed. Placement uses Apple's [NSScreen geometry APIs](https://developer.apple.com/documentation/appkit/nsscreen). Full-screen behavior can vary by application and macOS version. Physical notch placement and full-screen behavior should be checked on a notched MacBook before distributing a production release.
-
-No background daemon, launch-at-login setup, long-break scheduling, or session history is included.
+Set `NOTCHPOM_PREVIEW` to an absolute PNG path to capture the controls. GitHub Actions builds and tests pushes. Version tags (`v*`) also publish universal DMG/ZIP downloads to Releases with installation instructions.

@@ -1,0 +1,47 @@
+INSTALL NOTCHPOM
+
+Works on Apple Silicon and Intel Macs running macOS 13 or later.
+No developer tools or GitHub account needed.
+
+1. Drag NotchPom into the Applications shortcut in this disk image.
+2. Eject the NotchPom disk image.
+3. Open Applications and double-click NotchPom.
+4. Click the countdown in your menu bar, set Focus and Break minutes,
+   and click Start. There is no Dock icon.
+
+FIRST-LAUNCH MESSAGE FROM MACOS?
+
+This community test build is ad-hoc signed, without Apple notarization.
+If macOS says the developer cannot be verified or Apple could not verify
+the app is free of malware:
+
+1. Try opening NotchPom once, then dismiss the message.
+2. Open System Settings > Privacy & Security.
+3. Scroll to Security and click Open Anyway for NotchPom.
+4. Confirm Open and authenticate if asked.
+
+Only use this exception for a copy you intentionally downloaded from:
+https://github.com/EdwardWritesCodeIGuess/notchpom/releases
+
+If your Mac is managed by school or work, your administrator may need
+to allow it. Do not disable Gatekeeper. More from Apple:
+https://support.apple.com/en-us/102445
+
+UPDATING
+
+Quit NotchPom from its menu bar controls, then replace the old app in
+Applications with the new version. Your duration preferences stay saved.
+
+USING IT
+
+- Pause before editing Focus or Break (1-180 minutes).
+- Changing a duration resets the current session.
+- Click the small timer beside the notch to start or pause.
+- On a Mac without a notch, it appears below the center of the menu bar.
+- The next session waits for you unless auto-start is enabled.
+- Quit from the controls. To uninstall, quit and move the app to Trash.
+
+Liquid Glass is available on macOS 26+. Earlier versions use frosted
+material. Appearance follows your Mac's accessibility settings.
+
+Help and source: https://github.com/EdwardWritesCodeIGuess/notchpom

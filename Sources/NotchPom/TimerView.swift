@@ -56,6 +56,8 @@ struct TimerView: View {
             }
         }
         .padding(22).frame(width: 330)
+        .modifier(TimerGlassBackground())
+        .padding(6)
     }
 
     private func preference(_ title: String, value: Binding<Bool>) -> some View {
@@ -77,6 +79,16 @@ struct TimerView: View {
                     .labelsHidden().accessibilityLabel("\(title) duration")
             }
         }.frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct TimerGlassBackground: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(macOS 26.0, *) {
+            content.glassEffect(.regular, in: RoundedRectangle(cornerRadius: 24))
+        } else {
+            content.background(.regularMaterial, in: RoundedRectangle(cornerRadius: 24))
+        }
     }
 }
 
