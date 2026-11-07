@@ -1,7 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-APP="dist/NotchPom.app"
+STAGING="$(mktemp -d "${TMPDIR:-/tmp/}notchpom-build.XXXXXX")"
+trap 'rm -rf "$STAGING"' EXIT
+APP="$STAGING/NotchPom.app"
+mkdir -p dist
 mkdir -p "$APP/Contents/MacOS"
 if [ "${UNIVERSAL:-0}" = "1" ]; then
     for ARCH in arm64 x86_64; do
@@ -33,6 +36,12 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 </dict></plist>
 PLIST
 xattr -cr "$APP"
-codesign --force --sign - "$APP"
+SIGN_ARGS=(--force --sign "${CODE_SIGN_IDENTITY:--}")
+if [ "${CODE_SIGN_IDENTITY:--}" != "-" ]; then
+    SIGN_ARGS+=(--options runtime --timestamp)
+fi
+codesign "${SIGN_ARGS[@]}" "$APP"
+codesign --verify --deep --strict "$APP"
+ditto --norsrc --noextattr "$APP" dist/NotchPom.app
 ditto -c -k --sequesterRsrc --keepParent "$APP" dist/NotchPom.zip
-echo "Built $PWD/$APP"
+echo "Built $PWD/dist/NotchPom.app"

@@ -80,4 +80,8 @@ The timer checks cover pause/resume, delayed ticks, phase transitions, configura
 dist/NotchPom.app/Contents/MacOS/NotchPom --smoke-test
 ```
 
-Set `NOTCHPOM_PREVIEW` to an absolute PNG path to capture the controls. GitHub Actions builds and tests pushes. Version tags (`v*`) also publish universal DMG/ZIP downloads to Releases with installation instructions.
+Set `NOTCHPOM_PREVIEW` to an absolute PNG path to capture the controls. GitHub Actions builds and tests pushes. Version tags (`v*`) also build universal DMG/ZIP artifacts. Public releases must use the verified notarization process in [DISTRIBUTION.md](DISTRIBUTION.md).
+
+## Installation repair and Apple verification
+
+For a local source install, use `bash scripts/install-local.sh`. For the Developer ID signing and notarization process, see [DISTRIBUTION.md](DISTRIBUTION.md). Current preview downloads remain unnotarized until that process is completed.
