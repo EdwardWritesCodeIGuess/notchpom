@@ -44,9 +44,9 @@ struct TimerView: View {
             Text("Minutes · changing a duration resets this session")
                 .font(.system(size: 10)).foregroundStyle(.secondary)
             VStack(spacing: 10) {
-                Toggle("Show beside notch", isOn: $model.showNotch)
-                Toggle("Start next session automatically", isOn: $model.autoStart)
-                Toggle("Sound when session ends", isOn: $model.sound)
+                preference("Show beside notch", value: $model.showNotch)
+                preference("Start next session automatically", value: $model.autoStart)
+                preference("Sound when session ends", value: $model.sound)
             }.font(.system(size: 12)).toggleStyle(.switch).controlSize(.mini)
             HStack {
                 Text("Click the notch timer to pause or resume.").font(.system(size: 10)).foregroundStyle(.secondary)
@@ -56,6 +56,14 @@ struct TimerView: View {
             }
         }
         .padding(22).frame(width: 330)
+    }
+
+    private func preference(_ title: String, value: Binding<Bool>) -> some View {
+        HStack {
+            Text(title)
+            Spacer()
+            Toggle(title, isOn: value).labelsHidden()
+        }
     }
 
     private func durationControl(_ title: String, value: Int, set: @escaping (Int) -> Void) -> some View {

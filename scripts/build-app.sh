@@ -23,6 +23,7 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <key>NSPrefersDisplaySafeAreaCompatibilityMode</key><false/>
 </dict></plist>
 PLIST
+xattr -cr "$APP"
 codesign --force --sign - "$APP"
 ditto -c -k --sequesterRsrc --keepParent "$APP" dist/NotchPom.zip
 echo "Built $PWD/$APP"

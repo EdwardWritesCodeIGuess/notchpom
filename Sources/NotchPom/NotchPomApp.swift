@@ -27,8 +27,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.target = self
         statusItem.button?.action = #selector(togglePopover)
         statusItem.button?.font = .monospacedDigitSystemFont(ofSize: 12, weight: .medium)
-        popover.behavior = .transient
-        popover.contentViewController = NSHostingController(rootView: TimerView(model: model))
+        popover.behavior = ProcessInfo.processInfo.arguments.contains("--smoke-test") ? .applicationDefined : .transient
+        let controller = NSHostingController(rootView: TimerView(model: model))
+        controller.view.layoutSubtreeIfNeeded()
+        popover.contentViewController = controller
+        popover.contentSize = controller.view.fittingSize
         panel = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 108, height: 25),
                         styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
         panel.isOpaque = false
@@ -50,10 +53,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         updateStatus()
         positionPanel(visible: model.showNotch)
         if ProcessInfo.processInfo.arguments.contains("--smoke-test") {
-            togglePopover()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [self] in togglePopover() }
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [self] in
                 let checks = statusItem.button != nil && popover.isShown && panel.contentView != nil
-                print(checks ? "UI_SMOKE_PASS: status item, popover, notch panel initialized" : "UI_SMOKE_FAIL")
+                print(checks ? "UI_SMOKE_PASS: status item, popover, notch panel initialized" : "UI_SMOKE_FAIL: button=\(statusItem.button != nil), shown=\(popover.isShown), panel=\(panel.contentView != nil), controller=\(popover.contentViewController != nil)")
                 if let view = popover.contentViewController?.view,
                    let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds) {
                     view.cacheDisplay(in: view.bounds, to: bitmap)
@@ -62,11 +65,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                         try? data.write(to: URL(fileURLWithPath: path))
                     }
                 }
+                if !checks { exit(EXIT_FAILURE) }
                 NSApplication.shared.terminate(nil)
             }
         } else if !UserDefaults.standard.bool(forKey: "hasLaunched") {
             UserDefaults.standard.set(true, forKey: "hasLaunched")
-            togglePopover()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [self] in togglePopover() }
         }
     }
 
